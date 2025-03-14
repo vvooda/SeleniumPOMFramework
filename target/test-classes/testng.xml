@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name="Test Automation Test Suite">
+	<listeners>
+		<listener class-name="framework.reporting.ExtentReporterNG" />
+	</listeners>
+
+
+	<test name="FrameworkDemo">
+		<classes>
+			<class name="framework.tests.BlazeDemo"></class>
+		</classes>
+	</test>
+</suite>
