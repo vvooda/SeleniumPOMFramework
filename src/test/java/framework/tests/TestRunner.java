@@ -15,7 +15,7 @@ import org.testng.annotations.DataProvider;
         "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
         "rerun:target/failed_scenarios.txt"  // Captures failed scenarios for re-runs
     },
-    tags = "@regression",
+    tags = "@demo",
     monochrome = true
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
