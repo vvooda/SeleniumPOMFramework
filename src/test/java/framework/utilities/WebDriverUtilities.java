@@ -1,62 +1,71 @@
 package framework.utilities;
 
-import java.io.File;
+
 
 import framework.logging.Log;
-import java.io.IOException;
 import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-//import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
-import com.google.common.io.Files;
 
 public class WebDriverUtilities {
     
     WebDriver driver;
 
-    @SuppressWarnings("deprecation")
 	public WebDriverUtilities(WebDriver driver){
     	this.driver = driver;
         driver.manage().window().maximize();
-
-        driver.manage().window().maximize();
-        driver.manage().timeouts().pageLoadTimeout(UtilityConstants.PAGE_LOAD, TimeUnit.SECONDS);
-        driver.manage().timeouts().implicitlyWait(UtilityConstants.IMPLICIT_LOAD, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(UtilityConstants.PAGE_LOAD));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(UtilityConstants.IMPLICIT_LOAD));
 
     }
 
 
+	/**
+	 * Go to specified url 
+	 * @param url
+	 * 
+	 */
     public void openUrl(String url) {
         driver.get(url);
+        waitForPageToLoad();
     }
 
+	/**
+	 * Go to specified url and validate page title
+	 * @param url
+	 * @param title
+	 * 
+	 */
+    public void openUrl(String url,String title) {
+        driver.get(url);
+        waitForPageToLoad();
+        Assert.assertEquals(title, driver.getTitle(), "Page title not matching");
+    }
 
-    public void clickOnElement(WebElement element) {
+	/**
+	 * Check visibility of element and click on WebElement 
+	 * @param we
+	 */    
+    public void clickOnElement(WebElement we) {
     	
-        if (isElementClickable(element)) {	
-        	element.click();
+        if (isElementClickable(we)) {	
+        	we.click();
         	}
         
         }
         
-
+	/**
+	 * Retrieve title of page
+	 */
     public String getTitle(){
         return driver.getTitle();
     }
@@ -67,7 +76,7 @@ public class WebDriverUtilities {
 	/**
 	 * Select an option from drop down using its Visible text
 	 * 
-	 * @param selectParentId
+	 * @param we
 	 * @param visibleText
 	 */
 	public void selectOptionDropDownByVisibleText(WebElement we,
@@ -75,6 +84,9 @@ public class WebDriverUtilities {
 			if (isElementVisible(we)) {
 				Select dropdown = getSelectFromWebElement(we);
 				dropdown.selectByVisibleText(visibleText);
+				
+				String selectedText = dropdown.getFirstSelectedOption().getText();
+				Assert.assertEquals(selectedText, visibleText, "Dropdown selection failed!");
 			}
 	 }
 
@@ -83,32 +95,23 @@ public class WebDriverUtilities {
 	/**
 	 * De -Select any selected option from drop down.
 	 * 
-	 * @param selectParentId
+	 * @param we
 	 */
 	public void deselectAdropDownOptions(WebElement we) {
 		Select selectBox = getSelectFromWebElement(we);
 		selectBox.deselectAll();
 	}
 	
+	/**
+	 * Select any selected option from drop down.
+	 * 
+	 * @param we
+	 */
 	private Select getSelectFromWebElement(WebElement we) {
 		return new Select(we);
 	}
 	
-	/**
-	 * This method captures screenshot and put in the defined location
-	 * 
-	 * @throws IOException
-	 */
-	public void captureScreenshot(String testName)  {
-		File scrFile = ((TakesScreenshot) driver)
-				.getScreenshotAs(OutputType.FILE);
-		try {
-			//FileUtils.copyFile(scrFile, new File(UtilityConstants.SCREENSHOT_FOLDER));
-			Files.copy(scrFile, new File(UtilityConstants.SCREENSHOT_FOLDER));
-		}catch(Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+
 	
 	/**
 	 * Method to check visibility of an element
@@ -132,7 +135,6 @@ public class WebDriverUtilities {
 			 }
 		        
 		        catch (Exception ex) {
-		        	captureScreenshot("EleNotVisible");
 		            Log.info("Element not visible");
 		            ex.printStackTrace();
 		        }
@@ -166,7 +168,6 @@ public class WebDriverUtilities {
 			 }
 		        
 		        catch (Exception ex) {
-		        	captureScreenshot("EleNotClickable");
 		            Log.info("Element not clickable");
 		            ex.printStackTrace();
 
@@ -177,5 +178,45 @@ public class WebDriverUtilities {
 		 return isElementClickable;
 
 	}	
+	
+	/**
+	 * Method to check whether page is in ready state
+	 * 
+	 */	
+	public void checkPageIsReady() {
+
+		  JavascriptExecutor js = (JavascriptExecutor)driver;
+
+
+		  //Initially bellow given if condition will check ready state of page.
+		  if (js.executeScript("return document.readyState").toString().equals("complete")){ 
+		   System.out.println("Page Is loaded.");
+		   return; 
+		  } 
+
+		  //This loop will rotate for 25 times to check If page Is ready after every 1 second.
+		  //You can replace your value with 25 If you wants to Increase or decrease wait time.
+		  for (int i=0; i<25; i++){ 
+		   try {
+		    Thread.sleep(1000);
+		    }catch (InterruptedException e) {} 
+		   //To check page ready state.
+		   if (js.executeScript("return document.readyState").toString().equals("complete")){ 
+		    break; 
+		   }   
+		  }
+		 }
+	
+
+	/**
+	 * Method to wait for page to load
+	 * 
+	 */		
+	public void waitForPageToLoad() {
+	    new WebDriverWait(driver, Duration.ofSeconds(UtilityConstants.PAGE_LOAD)).until(
+	        webDriver -> ((JavascriptExecutor) webDriver)
+	            .executeScript("return document.readyState").equals("complete")
+	    );
+	}
 
 }

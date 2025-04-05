@@ -17,6 +17,11 @@ public class Connection {
 		return browserType;
 	}
 	
+	/**
+	 * To get WebDriver  
+	 * 
+	 * 
+	 */
     public void getConnection() {
     	
     	getBrowserType();
@@ -28,7 +33,6 @@ public class Connection {
     	else {
     		driver = new EdgeDriver();	
     	}
-    	driver.manage().window().maximize();
 
     }
 

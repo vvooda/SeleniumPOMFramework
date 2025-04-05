@@ -1,23 +1,24 @@
 package framework.tests;
-import framework.logging.Log;
 import org.openqa.selenium.WebDriver;
+import framework.utilities.CommonUtilities;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.Theme;
+
 
 public class BaseTest extends Connection {
-	
+	protected CommonUtilities commonUtil = null;
 	
 	protected WebDriver getDriver() {
-		getConnection();		
+		getConnection();	
+		commonUtil = new CommonUtilities(driver);
 		return driver;
 
 		
 	}
 	
-	
+	/**
+	 * To get page title 
+	 * 
+	 */
 	protected String getTitle() {
 
         return driver.getTitle();
@@ -25,7 +26,11 @@ public class BaseTest extends Connection {
     }
 
 	
-	
+	/**
+	 * To close all browsers initiated by Selenium 
+	 * 
+	 * 
+	 */
     protected void quit() {
         driver.quit();
 

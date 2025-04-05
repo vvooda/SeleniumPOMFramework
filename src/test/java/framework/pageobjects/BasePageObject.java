@@ -1,9 +1,7 @@
 package framework.pageobjects;
 import org.openqa.selenium.WebDriver;
-
-import framework.logging.Log;
 import framework.utilities.WebDriverUtilities;
-import framework.logging.*;
+
 
 public class BasePageObject {
 	
