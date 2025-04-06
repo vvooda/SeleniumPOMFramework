@@ -6,6 +6,7 @@ import framework.logging.Log;
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -125,7 +126,7 @@ public class WebDriverUtilities {
          = new FluentWait<>(driver)
                .withTimeout(Duration.ofSeconds(UtilityConstants.MINUTE_INTERVAL))
                .pollingEvery(Duration.ofSeconds(UtilityConstants.TIMEOUT))
-               .ignoring(TimeoutException.class);
+               .ignoring(TimeoutException.class, NoSuchElementException.class);
 
 		for (WebElement we : wes) {
 			
@@ -138,8 +139,6 @@ public class WebDriverUtilities {
 		            Log.info("Element not visible");
 		            ex.printStackTrace();
 		        }
-			
-			
 		}
 		 return isElementPresent;
 

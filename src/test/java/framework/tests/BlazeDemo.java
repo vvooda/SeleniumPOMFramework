@@ -24,7 +24,7 @@ public class BlazeDemo extends BaseTest {
 
     @Test(priority=1)
     public void openUrlPage(){
-    	bb.openUrl(UtilityConstants.URL);
+    	bb.openUrl(UtilityConstants.URL, UtilityConstants.title);
     	
     	Log.info("openURL test completed");
     }

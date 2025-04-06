@@ -28,8 +28,8 @@ public class BaseBlaze extends BasePageObject{
 	 * @param url
 	 * 
 	 */
-    public void openUrl(String url) {
-    	webUtils.openUrl(url);
+    public void openUrl(String url, String title) {
+    	webUtils.openUrl(url,title);
     }
 
 
